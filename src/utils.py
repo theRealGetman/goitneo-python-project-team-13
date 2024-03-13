@@ -83,7 +83,7 @@ commands = {
     'phone': "Shows contact phones. Required arguments: name", 
     'all': "Shows all contacts", 
     'add-birthday': "Adds birthday to contact. Date format: dd-mm-yyyy", 
-    'show-birthday': "Shows contact birthday",
+    'show-birthday': "Shows contact birthday. Required arguments: name",
     'birthdays': "Shows upcoming birthdays",
     'exit': "Exits assistant",
     'close': "Alias for Exit command"

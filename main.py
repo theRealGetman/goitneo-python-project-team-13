@@ -12,6 +12,7 @@ def parse_input(user_input):
 
 def main():
     print("Welcome to the assistant bot!")
+    handlers.print_help()
     while True:
         user_input = prompt("Enter a command: ", completer=commands_completer)
         command, *args = parse_input(user_input)
