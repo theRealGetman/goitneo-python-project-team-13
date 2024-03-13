@@ -1,7 +1,9 @@
+
 from src.local_storage import address_book, notes
-from src.utils import ContactExistsError, handle_error, NoteNotExistError, NoteEditArgsError
+from src.utils import ContactExistsError, handle_error, commands, NoteExistsError
 from src.models import Record
 from src.notes import Note
+from termcolor import colored
 
 
 # AddressBook
@@ -95,17 +97,17 @@ def add_note(args) -> str:
     args_error_label='You need to provide title',
     key_error_label='Note doesn\'t exist.',
 )
-def show_notes(args) -> str:
+def show_notes(search: list = None) -> str:
     separator = '\n' + ('-' * 40) + '\n\n'
+    print('args', search)
 
     def show(notes):
         return ''.join(separator + str(notes[note]) for note in notes) + separator
 
-    if not args:
+    if not search:
         return show(notes)
 
-    key_word = args[0]
-    found_notes = notes.find_notes(key_word)
+    found_notes = notes.find_notes(search)
 
     if found_notes:
         return show(found_notes)
@@ -117,12 +119,8 @@ def show_notes(args) -> str:
     args_error_label='You need to provide title and optionally new title, new description, and new tags',
     key_error_label='Note doesn\'t exist.',
 )
-def edit_note(args) -> str:
-    title = args[0]
-    new_title = args[1] if len(args) > 1 else None
-    new_desc = args[2] if len(args) > 2 else None
-    new_tags = args[3].split(',') if len(args) > 3 else None
-
+def edit_note(title, new_title, new_desc, tags) -> str:
+    new_tags = tags.split()
     notes.edit_note(title, new_title=new_title, new_desc=new_desc, new_tags=new_tags)
     return f'Note "{title}" has been updated.'
 
@@ -146,5 +144,20 @@ def close() -> str:
     return 'Good bye!'
 
 
+def note_already_exist(title: str) -> str:
+    return f'Note with title: "{title}" already exist.'
+
+
+def is_note_already_exist(title: str):
+    return notes.is_note_already_exist(title)
+
+
 def invalid_command() -> str:
     return 'Invalid command.'
+
+
+def print_help() -> None:
+    print(colored("Available commands:", 'light_yellow', attrs=['bold']))
+    for name, description in commands.items():
+        formatted_name = f"{colored(name, 'green', attrs=['bold']):40}"
+        print(f"{formatted_name} {description}")

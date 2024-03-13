@@ -67,8 +67,8 @@ class Notes(UserDict):
             current_note.tags = [Tag(tag) for tag in new_tags]
         return
 
-    def find_notes(self, key_word) -> list:
-        _key_word = key_word.lower()
+    def find_notes(self, key_words: list) -> list:
+        _key_word = ' '.join(str(word) for word in key_words).lower()
 
         def match_notes(title):
             note = self.data[title]
@@ -79,10 +79,13 @@ class Notes(UserDict):
             if matched_title or matched_desc or matched_tags:
                 return note
 
-        return list(filter(lambda title: match_notes(title), self.data))
+        return list(filter(lambda title: match_notes(title), self.data.keys()))
 
     def remove_note(self, title):
         del self.data[title]
+
+    def is_note_already_exist(self, title: str):
+        return title in self.data
 
 
 def test_notes():

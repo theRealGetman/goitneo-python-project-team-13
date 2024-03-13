@@ -1,3 +1,6 @@
+from prompt_toolkit.completion import NestedCompleter
+
+
 class PhoneValidationError(Exception):
     pass
 
@@ -88,3 +91,26 @@ weekdays = {
     5: 'Saturday',
     6: 'Sunday',
 }
+
+
+# TODO: add notes related commands
+commands = {
+    'help': "Shows all available commands",
+    'hello': "Greeting command",
+    'add': "Adds new contact. Required arguments: name, phone (10 digits)",
+    'change': "Changes existing contact. Required arguments: name, old phone, new phone",
+    'phone': "Shows contact phones. Required arguments: name",
+    'all': "Shows all contacts",
+    'add-birthday': "Adds birthday to contact. Date format: dd-mm-yyyy",
+    'show-birthday': "Shows contact birthday. Required arguments: name",
+    'birthdays': "Shows upcoming birthdays",
+    'add-note': 'Adds new note. Required arguments: title, description, tags',
+    'edit-note': 'Changes existing note. Required arguments: old_title, title, description, tags',
+    'show-notes': 'Shows all notes (option: add word for search)',
+    'remove-note': 'Removes note. Required arguments: title',
+    'exit': "Exits assistant",
+    'close': "Alias for Exit command"
+}
+
+
+commands_completer = NestedCompleter.from_nested_dict(dict.fromkeys(commands.keys()))
