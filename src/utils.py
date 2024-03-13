@@ -30,6 +30,15 @@ class ContactNotExistError(Exception):
     pass
 
 
+class NoteExistsError(Exception):
+    pass
+
+
+class NoteNotExistError(Exception):
+    pass
+
+
+
 def handle_error(args_error_label='', key_error_label=''):
     def decorator(func):
         def inner(*args, **kwargs):

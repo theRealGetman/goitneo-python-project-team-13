@@ -1,5 +1,5 @@
 import src.handlers as handlers
-from src.local_storage import save_book
+from src.local_storage import save_book, save_notes
 
 
 def parse_input(user_input):
@@ -33,9 +33,16 @@ def main():
             print(handlers.show_birthday(args))
         elif command == "birthdays":
             print(handlers.birthdays())
+        elif command == "add-note":
+            print(handlers.add_note(args))
+        elif command == "show-notes":
+            print(handlers.show_notes(args))
+        elif command == "remove-note":
+            print(handlers.remove_note(args))
         else:
             print(handlers.invalid_command())
         save_book()
+        save_notes()
 
 
 if __name__ == "__main__":
