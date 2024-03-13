@@ -1,5 +1,7 @@
 import src.handlers as handlers
 from src.local_storage import save_book
+from src.utils import commands_completer
+from prompt_toolkit import prompt
 
 
 def parse_input(user_input):
@@ -11,7 +13,7 @@ def parse_input(user_input):
 def main():
     print("Welcome to the assistant bot!")
     while True:
-        user_input = input("Enter a command: ")
+        user_input = prompt("Enter a command: ", completer=commands_completer)
         command, *args = parse_input(user_input)
 
         if command in ["close", "exit"]:
