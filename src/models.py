@@ -117,9 +117,29 @@ class AddressBook(UserDict):
 
         self.data[name] = record
 
-    def find(self, name: str) -> Record:
+    def find_by_name(self, name: str) -> Record:
         try:
             return self.data[name]
+        except KeyError:
+            raise ContactNotExistError()
+
+    def find(self, keyword: str) -> list[Record]:
+        try:
+            is_phone = keyword.isnumeric()
+            if is_phone:
+                records = []
+                for _, record in self.data.items():
+                    phones = [phone.value for phone in record.phones]
+                    matched_phones = list(
+                        filter(lambda phone: phone.startswith(keyword), phones))
+                    if matched_phones:
+                        records.append(record)
+                return records
+            else:
+                names = self.data.keys()
+                matched_keys = list(
+                    filter(lambda name: name.startswith(keyword), names))
+                return [self.data.get(key) for key in matched_keys]
         except KeyError:
             raise ContactNotExistError()
 
