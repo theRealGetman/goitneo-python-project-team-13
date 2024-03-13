@@ -38,6 +38,9 @@ class NoteNotExistError(Exception):
     pass
 
 
+class NoteEditArgsError(Exception):
+    pass
+
 
 def handle_error(args_error_label='', key_error_label=''):
     def decorator(func):
@@ -64,6 +67,12 @@ def handle_error(args_error_label='', key_error_label=''):
                 return 'Contact already exists'
             except ContactNotExistError:
                 return 'Contact doesn\'t exist'
+            except NoteEditArgsError:
+                return 'You need to provide at least the title of the note to edit'
+            except NoteNotExistError:
+                return f"Note doesn\'t exists"
+            except NoteExistsError:
+                return f"Note already exists"
             except Exception as e:
                 return f'Exception during {func.__name__} >>> {e}'
         return inner

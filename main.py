@@ -35,6 +35,8 @@ def main():
             print(handlers.birthdays())
         elif command == "add-note":
             print(handlers.add_note(args))
+        elif command == "edit-note":
+            print(handlers.edit_note(args))
         elif command == "show-notes":
             print(handlers.show_notes(args))
         elif command == "remove-note":

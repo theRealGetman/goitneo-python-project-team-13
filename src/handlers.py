@@ -1,5 +1,5 @@
 from src.local_storage import address_book, notes
-from src.utils import ContactExistsError, handle_error, NoteNotExistError
+from src.utils import ContactExistsError, handle_error, NoteNotExistError, NoteEditArgsError
 from src.models import Record
 from src.notes import Note
 
@@ -85,11 +85,8 @@ def show_all() -> str:
     args_error_label='You need to provide title, description, and optionally tags',
 )
 def add_note(args) -> str:
-    print('args', args)
     title, desc, *tags = args
     note = Note(title, desc, tags)
-    print('Note', note)
-
     notes.add_note(note)
     return f'Note "{title}" added.'
 
@@ -99,12 +96,20 @@ def add_note(args) -> str:
     key_error_label='Note doesn\'t exist.',
 )
 def show_notes(args) -> str:
+    separator = '\n' + ('-' * 40) + '\n\n'
+
+    def show(notes):
+        return ''.join(separator + str(notes[note]) for note in notes) + separator
+
     if not args:
-        return '\n'.join(str(note) for note in notes.data)
+        return show(notes)
+
     key_word = args[0]
     found_notes = notes.find_notes(key_word)
+
     if found_notes:
-        return '\n'.join(str(note) for note in found_notes) + '\n'
+        return show(found_notes)
+
     return 'No notes found.'
 
 
@@ -113,19 +118,13 @@ def show_notes(args) -> str:
     key_error_label='Note doesn\'t exist.',
 )
 def edit_note(args) -> str:
-    if len(args) < 1:
-        raise ValueError("You need to provide at least the title of the note to edit.")
-
     title = args[0]
-    new_title = args[1] if len(args) > 1 else ''
-    new_desc = args[2] if len(args) > 2 else ''
-    new_tags = args[3].split(',') if len(args) > 3 else []
+    new_title = args[1] if len(args) > 1 else None
+    new_desc = args[2] if len(args) > 2 else None
+    new_tags = args[3].split(',') if len(args) > 3 else None
 
-    try:
-        notes.edit_note(title, new_title=new_title, new_desc=new_desc, new_tags=new_tags)
-        return f'Note "{title}" has been updated.'
-    except NoteNotExistError as e:
-        return str(e)
+    notes.edit_note(title, new_title=new_title, new_desc=new_desc, new_tags=new_tags)
+    return f'Note "{title}" has been updated.'
 
 
 @handle_error(

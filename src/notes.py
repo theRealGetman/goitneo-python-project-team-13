@@ -1,4 +1,4 @@
-from collections import UserList
+from collections import UserDict, UserList
 from datetime import datetime
 from src.utils import *
 
@@ -23,7 +23,7 @@ class Tag(Field):
     pass
 
 
-class CreateAt(Field):
+class CreatedAt(Field):
     def __init__(self):
         data = datetime.now().date()
         self.value = data
@@ -35,51 +35,54 @@ class Note:
         self.title = Title(title)
         self.desc = Desc(desc)
         self.tags = [Tag(tag) for tag in tags]
-        self.createAt = CreateAt()
+        self.createdAt = CreatedAt()
 
     def __str__(self):
         tags_str = ', '.join(tag.value for tag in self.tags)
-        return (f"Title: {self.title.value}\n"
-                f"Description: {self.desc.value}\n"
-                f"Tags: {tags_str}\n"
-                f"Created At: {self.createAt.value.strftime('%Y-%m-%d')}")
+        return ('{:20}{}\n'.format('Title:', self.title.value) +
+                '{:20}{}\n'.format('Description:', self.desc.value) +
+                '{:20}{}\n'.format('Tags:', tags_str) +
+                '{:20}{}\n'.format('Created At:', self.createdAt.value.strftime('%Y-%m-%d'))
+                )
 
 
-class Notes(UserList):
+class Notes(UserDict):
     def add_note(self, note: Note):
-        self.data.append(note)
+        title = note.title.value
+        if title in self.data:
+            raise NoteExistsError()
+        self.data[title] = note
 
     def edit_note(self, title, new_title: str = '', new_desc: str = '', new_tags: list = []):
-        for note in self.data:
-            if note.title.value == title:
-                if new_title:
-                    note.title = Title(new_title)
-                if new_desc:
-                    note.desc = Desc(new_desc)
-                if new_tags:
-                    note.tags = [Tag(tag) for tag in new_tags]
-                return
-        raise NoteNotExistError(f"Note with title '{title}' not found.")
+        current_note = self.data[title]
+
+        if not current_note:
+            raise NoteNotExistError()
+
+        if new_title:
+            current_note.title = Title(new_title)
+        if new_desc:
+            current_note.desc = Desc(new_desc)
+        if new_tags:
+            current_note.tags = [Tag(tag) for tag in new_tags]
+        return
 
     def find_notes(self, key_word) -> list:
-        found_notes = []
         _key_word = key_word.lower()
 
-        for note in self.data:
+        def match_notes(title):
+            note = self.data[title]
             matched_title = _key_word in note.title.value.lower()
             matched_desc = _key_word in note.desc.value.lower()
             matched_tags = list(filter(lambda tag: tag.value.lower() == _key_word, note.tags))
 
-            if matched_title or matched_desc or len(matched_tags) > 0:
-                found_notes.append(note)
-        return found_notes
+            if matched_title or matched_desc or matched_tags:
+                return note
+
+        return list(filter(lambda title: match_notes(title), self.data))
 
     def remove_note(self, title):
-        for i, note in enumerate(self.data):
-            if note.title.value == title:
-                del self.data[i]
-                return
-        raise NoteNotExistError(f"Note with title '{title}' not found.")
+        del self.data[title]
 
 
 def test_notes():
@@ -88,12 +91,13 @@ def test_notes():
     # Helper
     def show(title: str):
         print('-' * 10, title, '-' * 10)
-        for note in notes.data:
+        for title in notes.data:
+            note = notes.data[title]
             print(note.title.value, note.desc.value, [tag.value for tag in note.tags])
 
     # Додавання заміток
-    notes.add_note("Shopping list", "Buy milk, bread, eggs", ["shopping", "urgent"])
-    notes.add_note("To-Do", "Call John", ["work"])
+    notes.add_note(Note("Shopping list", "Buy milk, bread, eggs", ["shopping", "urgent"]))
+    notes.add_note(Note("To-Do", "Call John", ["work"]))
     show('add_note')
 
     # Редагування замітки
@@ -104,7 +108,9 @@ def test_notes():
     # Пошук заміток
     found_notes = notes.find_notes("shopping")
     print('-' * 10, 'find_notes', '-' * 10)
-    for note in found_notes:
+
+    for title in found_notes:
+        note = notes[title]
         print(note.title.value, note.desc.value, [tag.value for tag in note.tags])
 
     # Видалення всіх замітки
