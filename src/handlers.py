@@ -1,6 +1,7 @@
 from src.local_storage import address_book
-from src.utils import ContactExistsError, handle_error
+from src.utils import ContactExistsError, handle_error, commands
 from src.models import Record
+from termcolor import colored
 
 
 def hello() -> str:
@@ -88,3 +89,10 @@ def close() -> str:
 
 def invalid_command() -> str:
     return 'Invalid command.'
+
+
+def print_help() -> None:
+    print(colored("Available commands:", 'light_yellow', attrs=['bold']))
+    for name, description in commands.items():
+        formatted_name = f"{colored(name, 'green', attrs=['bold']):40}"
+        print(f"{formatted_name} {description}")

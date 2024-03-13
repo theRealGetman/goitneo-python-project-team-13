@@ -35,6 +35,8 @@ def main():
             print(handlers.show_birthday(args))
         elif command == "birthdays":
             print(handlers.birthdays())
+        elif command == "help":
+            handlers.print_help()
         else:
             print(handlers.invalid_command())
         save_book()
