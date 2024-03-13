@@ -132,7 +132,7 @@ class AddressBook(UserDict):
     def all_records(self):
         return self.data.values()
 
-    def get_birthdays_per_week(self) -> str:
+    def get_birthdays_per_week(self, day: int = 7) -> str:
         birthdays_by_weekday = defaultdict(list)
         today = datetime.now().date()
         for contact in self.data.values():
@@ -148,7 +148,7 @@ class AddressBook(UserDict):
                     year=today.year + 1)
 
             delta_days = (birthday_this_year - today).days
-            if delta_days < 7:
+            if delta_days < day:
                 weekday = weekdays[birthday_this_year.weekday()]
                 if weekday == 'Saturday' or weekday == 'Sunday':
                     if delta_days > 5:

@@ -78,6 +78,12 @@ def birthdays() -> str:
 
 
 @handle_error()
+def get_birthdays_per_day(args: int) -> str:
+    days = int(args[0])
+    return '\n'.join(address_book.get_birthdays_per_week(days))
+
+
+@handle_error()
 def show_all() -> str:
     return '\n'.join([str(record) for record in address_book.all_records()])
 
