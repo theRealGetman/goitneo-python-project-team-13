@@ -33,19 +33,24 @@ def add_contact(args) -> str:
 def change_contact(args) -> str:
     name, old_phone, new_phone = args
 
-    record = address_book.find(name)
+    record = address_book.find_by_name(name)
     record.edit_phone(old_phone, new_phone)
 
     return f'For {name} changed phone from {old_phone} to {new_phone}'
 
 
 @handle_error(
-    args_error_label='You need to provide name',
+    args_error_label='You need to provide name or phone',
     key_error_label='Contact doesn\'t exist.',
 )
-def show_phone(args) -> str:
-    name = args[0]
-    return ', '.join(str(phone) for phone in address_book.find(name).phones)
+def find_contact(args) -> str:
+    keyword = args[0]
+    separator = '\n' + ('-' * 40) + '\n'
+    records = address_book.find(keyword)
+    if records:
+        return '\n' + separator.join(str(record) for record in records) + '\n'
+    else:
+        return f'No contacts find for search query: {keyword}'
 
 
 @handle_error(

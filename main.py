@@ -22,13 +22,13 @@ def main():
             break
         elif command == "hello":
             print(handlers.hello())
-        elif command == "add":
+        elif command == "add-contact":
             print(handlers.add_contact(args))
-        elif command == "change":
+        elif command == "change-contact":
             print(handlers.change_contact(args))
-        elif command == "phone":
-            print(handlers.show_phone(args))
-        elif command == "all":
+        elif command == "find-contact":
+            print(handlers.find_contact(args))
+        elif command == "all-contacts":
             print(handlers.show_all())
         elif command == "add-birthday":
             print(handlers.add_birthday(args))
