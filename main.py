@@ -48,7 +48,7 @@ def main():
         elif command == "edit-note":
             old_title = input("Enter note title: ")
             if not handlers.is_note_already_exist(old_title):
-                print(handlers.note_doesnt_exist(new_title))
+                print(handlers.note_doesnt_exist(old_title))
                 continue
 
             new_title = input("Enter note new title: ")
