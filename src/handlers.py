@@ -99,7 +99,6 @@ def add_note(args) -> str:
 )
 def show_notes(search: list = None) -> str:
     separator = '\n' + ('-' * 40) + '\n\n'
-    print('args', search)
 
     def show(notes):
         return ''.join(separator + str(notes[note]) for note in notes) + separator
@@ -148,8 +147,12 @@ def note_already_exist(title: str) -> str:
     return f'Note with title: "{title}" already exist.'
 
 
-def is_note_already_exist(title: str):
+def is_note_already_exist(title: str) -> bool:
     return notes.is_note_already_exist(title)
+
+
+def note_doesnt_exist(title: str) -> str:
+    return f'Note with title: "{title}" doesn\'t exist.'
 
 
 def invalid_command() -> str:

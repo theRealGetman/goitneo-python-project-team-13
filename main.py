@@ -47,10 +47,15 @@ def main():
             print(handlers.add_note([title, desc, tags]))
         elif command == "edit-note":
             old_title = input("Enter note title: ")
+            if not handlers.is_note_already_exist(old_title):
+                print(handlers.note_doesnt_exist(new_title))
+                continue
+
             new_title = input("Enter note new title: ")
             if handlers.is_note_already_exist(new_title):
                 print(handlers.note_already_exist(new_title))
                 continue
+
             desc = input("Enter note new content: ")
             tags = input("Enter note new tags (leave emplty if none): ")
 

@@ -1,4 +1,4 @@
-from collections import UserDict, UserList
+from collections import UserDict
 from datetime import datetime
 from src.utils import *
 
@@ -65,21 +65,20 @@ class Notes(UserDict):
             current_note.desc = Desc(new_desc)
         if new_tags:
             current_note.tags = [Tag(tag) for tag in new_tags]
+
+        self.data[current_note.get('title').value] = current_note
         return
 
     def find_notes(self, key_words: list) -> list:
-        _key_word = ' '.join(str(word) for word in key_words).lower()
+        title = ' '.join(str(word) for word in key_words).lower()
 
-        def match_notes(title):
-            note = self.data[title]
-            matched_title = _key_word in note.title.value.lower()
-            matched_desc = _key_word in note.desc.value.lower()
-            matched_tags = list(filter(lambda tag: tag.value.lower() == _key_word, note.tags))
+        result = dict()
+        note_by_title = self.data[title]
 
-            if matched_title or matched_desc or matched_tags:
-                return note
+        if note_by_title:
+            result[title] = note_by_title
 
-        return list(filter(lambda title: match_notes(title), self.data.keys()))
+        return result
 
     def remove_note(self, title):
         del self.data[title]
