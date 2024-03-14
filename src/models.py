@@ -161,14 +161,13 @@ class AddressBook(UserDict):
                     birthdays_by_weekday[weekday].append(
                         {'name': name, 'days_delta': delta_days})
 
-        sorted_items = {k: v for k, v in sorted(
-            birthdays_by_weekday.items(), key=lambda item: item[1][0]['days_delta'])}
-
+        sorted_items = {}
+        for k, v in sorted(birthdays_by_weekday.items(), key=lambda item: item[1][0]['days_delta']):
+            sorted_items[k] = [{'name': contact['name'], 'birthday': self.data[contact['name']].birthday.value} for contact in v]
+    
         result = []
         for weekday, contacts in sorted_items.items():
-            for contact in contacts:
-                birthday_date = today + timedelta(days=contact['days_delta'])
-                formatted_birthday = birthday_date.strftime("%d %b %a")
-                result.append('{}: {}'.format(
-                    formatted_birthday, contact['name'].capitalize()))
+            result.append('{}: {}'.format(weekday, ', '.join(
+                ['{} ({})'.format(contact['name'].capitalize(), contact['birthday'].strftime('%d %b %Y')) for contact in contacts])))
+
         return result
