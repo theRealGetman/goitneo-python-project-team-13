@@ -1,7 +1,6 @@
 from collections import UserDict, defaultdict
 from datetime import datetime
-from utils import *
-import re
+from src.utils import *
 
 
 class Field:
@@ -34,31 +33,18 @@ class Phone(Field):
 
         super().__init__(value)
 
-
     def __eq__(self, other):
         """Overrides the default implementation"""
         if isinstance(other, Phone):
             return self.value == other.value
         return False
-    
-class Email(Field):
-    def __init__(self, value):
-        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
-            raise ValueError("Invalid email address")
-        
-    def __eq__(self, other):
-        """Overrides the default implementation"""
-        if isinstance(other, Email):
-            return self.value == other.value
-        return False
+
 
 class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.birthday = None
         self.phones = []
-        self.names = []
-        
 
     def __str__(self):
         return f"Contact name: {self.name.value}, birthday: {self.birthday}, phones: {'; '.join(p.value for p in self.phones)}"
@@ -79,7 +65,6 @@ class Record:
 
         self.phones.remove(phone)
 
-    
     def edit_phone(self, old: str, new: str):
         old = Phone(old)
         new = Phone(new)
@@ -132,16 +117,31 @@ class AddressBook(UserDict):
 
         self.data[name] = record
 
-    def find(self, name: str) -> Record:
+    def find_by_name(self, name: str) -> Record:
         try:
             return self.data[name]
         except KeyError:
             raise ContactNotExistError()
-    
-    def remove_name(self, name: Name):
-        name = Name(name)
-        self.find(name)
-        self.names.remove(name)
+
+    def find(self, keyword: str) -> list[Record]:
+        try:
+            is_phone = keyword.isnumeric()
+            if is_phone:
+                records = []
+                for _, record in self.data.items():
+                    phones = [phone.value for phone in record.phones]
+                    matched_phones = list(
+                        filter(lambda phone: phone.startswith(keyword), phones))
+                    if matched_phones:
+                        records.append(record)
+                return records
+            else:
+                names = self.data.keys()
+                matched_keys = list(
+                    filter(lambda name: name.startswith(keyword), names))
+                return [self.data.get(key) for key in matched_keys]
+        except KeyError:
+            raise ContactNotExistError()
 
     def delete(self, name: str):
         try:
