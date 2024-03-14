@@ -1,6 +1,7 @@
 from collections import UserDict, defaultdict
 from datetime import datetime
-from src.utils import *
+from utils import *
+import re
 
 
 class Field:
@@ -33,18 +34,31 @@ class Phone(Field):
 
         super().__init__(value)
 
+
     def __eq__(self, other):
         """Overrides the default implementation"""
         if isinstance(other, Phone):
             return self.value == other.value
         return False
-
+    
+class Email(Field):
+    def __init__(self, value):
+        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
+            raise ValueError("Invalid email address")
+        
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, Email):
+            return self.value == other.value
+        return False
 
 class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.birthday = None
         self.phones = []
+        self.names = []
+        
 
     def __str__(self):
         return f"Contact name: {self.name.value}, birthday: {self.birthday}, phones: {'; '.join(p.value for p in self.phones)}"
@@ -65,6 +79,7 @@ class Record:
 
         self.phones.remove(phone)
 
+    
     def edit_phone(self, old: str, new: str):
         old = Phone(old)
         new = Phone(new)
@@ -122,6 +137,11 @@ class AddressBook(UserDict):
             return self.data[name]
         except KeyError:
             raise ContactNotExistError()
+    
+    def remove_name(self, name: Name):
+        name = Name(name)
+        self.find(name)
+        self.names.remove(name)
 
     def delete(self, name: str):
         try:
