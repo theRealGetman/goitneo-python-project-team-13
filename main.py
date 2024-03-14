@@ -32,8 +32,6 @@ def main():
         elif command == "show-birthday":
             print(handlers.show_birthday(args))
         elif command == "birthdays":
-            print(handlers.birthdays())
-        elif command == "bdays-period":
             print(handlers.get_birthdays_per_day(args))
         else:
             print(handlers.invalid_command())

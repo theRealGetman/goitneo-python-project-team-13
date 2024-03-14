@@ -1,5 +1,5 @@
 from collections import UserDict, defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 from src.utils import *
 
 
@@ -166,7 +166,9 @@ class AddressBook(UserDict):
 
         result = []
         for weekday, contacts in sorted_items.items():
-            result.append('{}: {}'.format(weekday, ', '.join(
-                [contact['name'] for contact in contacts])))
-
+            for contact in contacts:
+                birthday_date = today + timedelta(days=contact['days_delta'])
+                formatted_birthday = birthday_date.strftime("%d %b %a")
+                result.append('{}: {}'.format(
+                    formatted_birthday, contact['name'].capitalize()))
         return result
