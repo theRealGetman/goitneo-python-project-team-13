@@ -33,6 +33,18 @@ class ContactNotExistError(Exception):
     pass
 
 
+class EmailValidationError(Exception):
+    pass
+
+
+class EmailExistsError(Exception):
+    pass
+
+
+class EmailNotExistError(Exception):
+    pass
+
+
 class NoteExistsError(Exception):
     pass
 
@@ -70,6 +82,12 @@ def handle_error(args_error_label='', key_error_label=''):
                 return 'Contact already exists'
             except ContactNotExistError:
                 return 'Contact doesn\'t exist'
+            except EmailValidationError:
+                return 'You should provide real email address'
+            except EmailNotExistError:
+                return 'Email doesn\'t exist'
+            except EmailExistsError:
+                return 'Email already exist'
             except NoteEditArgsError:
                 return 'You need to provide at least the title of the note to edit'
             except NoteNotExistError:
@@ -97,20 +115,25 @@ weekdays = {
 commands = {
     'help': "Shows all available commands",
     'hello': "Greeting command",
-    'add-contact': "Adds new contact. Required arguments: name, phone (10 digits)",
-    'change-contact': "Changes existing contact. Required arguments: name, old phone, new phone",
+    'add-contact': "Adds new contact",
+    'change-contact': "Changes existing contact",
     'find-contact': "Shows contact phones. Required arguments: name or phone search query",
     'all-contacts': "Shows all contacts",
-    'add-birthday': "Adds birthday to contact. Date format: dd-mm-yyyy",
+    'remove-contact': "Removed existing contact. Required arguments: name",
+    'add-birthday': "Adds birthday to contact. Date format: dd.mm.yyyy. Required arguments: name, birthday",
     'show-birthday': "Shows contact birthday. Required arguments: name",
-    'birthdays': "Shows upcoming birthdays",
-    'add-note': 'Adds new note. Required arguments: title, description, tags',
-    'edit-note': 'Changes existing note. Required arguments: old_title, title, description, tags',
-    'show-notes': 'Shows all notes (option: add word for search)',
-    'remove-note': 'Removes note. Required arguments: title',
+    'birthdays': "Shows upcoming birthdays. Optional argiments: days",
+    'add-email': "Adds email to contact. Required arguments: name, email",
+    'show-email': "Shows contact email. Required arguments: name",
+    'change-email': "Changes email of contact. Required arguments: name, email",
+    'add-note': 'Adds new note',
+    'edit-note': 'Changes existing note',
+    'show-notes': 'Shows all notes. Optional add word to search',
+    'remove-note': 'Removes note',
     'exit': "Exits assistant",
     'close': "Alias for Exit command"
 }
 
 
-commands_completer = NestedCompleter.from_nested_dict(dict.fromkeys(commands.keys()))
+commands_completer = NestedCompleter.from_nested_dict(
+    dict.fromkeys(commands.keys()))

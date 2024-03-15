@@ -1,6 +1,7 @@
 from collections import UserDict, defaultdict
 from datetime import datetime
 from src.utils import *
+import re
 
 
 class Field:
@@ -40,14 +41,55 @@ class Phone(Field):
         return False
 
 
+class Email(Field):
+    def __init__(self, value):
+        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
+            raise EmailValidationError()
+
+        super().__init__(value)
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, Email):
+            return self.value == other.value
+        return False
+
+
 class Record:
     def __init__(self, name):
         self.name = Name(name)
         self.birthday = None
         self.phones = []
+        self.email = None
 
     def __str__(self):
-        return f"Contact name: {self.name.value}, birthday: {self.birthday}, phones: {'; '.join(p.value for p in self.phones)}"
+        birthday = self.birthday
+        if birthday:
+            birthday = birthday.value.strftime('%d.%m.%Y')
+
+        return f"Contact name: {self.name.value}, birthday: {birthday}, phones: {'; '.join(p.value for p in self.phones)}, email: {self.email}"
+
+    def add_email(self, email: str):
+        if self.email:
+            raise EmailExistsError()
+
+        email = Email(email)
+
+        self.email = email
+
+    def show_email(self) -> Email:
+        if not self.email:
+            raise EmailNotExistError()
+
+        return self.email
+
+    def change_email(self, email: str):
+        if not self.email:
+            raise EmailNotExistError()
+
+        email = Email(email)
+
+        self.email = email
 
     def add_phone(self, phone: str):
         phone = Phone(phone)
@@ -101,6 +143,9 @@ class Record:
 
 
 class AddressBook(UserDict):
+    def is_record_already_exist(self, name):
+        return name in self.data
+
     def add_record(self, record: Record):
         name = record.name.value
 
@@ -122,6 +167,9 @@ class AddressBook(UserDict):
             return self.data[name]
         except KeyError:
             raise ContactNotExistError()
+
+    def remove_contact(self, name: str):
+        del self.data[name]
 
     def find(self, keyword: str) -> list[Record]:
         try:
@@ -183,11 +231,14 @@ class AddressBook(UserDict):
 
         sorted_items = {}
         for k, v in sorted(birthdays_by_weekday.items(), key=lambda item: item[1][0]['days_delta']):
-            sorted_items[k] = [{'name': contact['name'], 'birthday': self.data[contact['name']].birthday.value} for contact in v]
-    
+            sorted_items[k] = [
+                {'name': contact['name'], 'birthday': self.data[contact['name']].birthday.value} for contact in v]
+
         result = []
         for weekday, contacts in sorted_items.items():
-            names = ', '.join([contact['name'].capitalize() for contact in contacts])
-            result.append('{} {}: {}'.format(weekday, contacts[0]['birthday'].strftime('%d %b'), names))
+            names = ', '.join([contact['name'].capitalize()
+                              for contact in contacts])
+            result.append('{} {}: {}'.format(
+                weekday, contacts[0]['birthday'].strftime('%d %b'), names))
 
         return result

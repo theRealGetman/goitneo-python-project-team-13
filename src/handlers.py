@@ -11,12 +11,18 @@ from termcolor import colored
     args_error_label='You need to provide name and phone',
     key_error_label='Contact already exists.',
 )
-def add_contact(args) -> str:
-    name, phone = args
+def add_contact(name, phone, email='', birthday='') -> str:
+    if not name or not phone:
+        raise ValueError()
 
     try:
         record = Record(name)
         record.add_phone(phone)
+        if email:
+            record.add_email(email)
+        if birthday:
+            record.add_birthday(birthday)
+
         address_book.add_record(record)
         return f'Contact {name} added.'
     except ContactExistsError:
@@ -26,17 +32,33 @@ def add_contact(args) -> str:
         return f'Added phone to contact {name}.'
 
 
+def is_contact_already_exist(name: str) -> bool:
+    return address_book.is_record_already_exist(name)
+
+
 @handle_error(
     args_error_label='You need to provide name, old phone and new phone',
     key_error_label='Contact doesn`t exist.',
 )
-def change_contact(args) -> str:
-    name, old_phone, new_phone = args
+def change_contact(name, old_phone, new_phone) -> str:
+    if not name or not old_phone or not new_phone:
+        raise ValueError()
 
     record = address_book.find_by_name(name)
     record.edit_phone(old_phone, new_phone)
 
     return f'For {name} changed phone from {old_phone} to {new_phone}'
+
+
+@handle_error(
+    args_error_label='You need to provide name',
+    key_error_label='Contact doesn`t exist.',
+)
+def remove_contact(args) -> str:
+    name = args[0]
+
+    address_book.remove_contact(name)
+    return f'Contact {name} removed'
 
 
 @handle_error(
@@ -60,8 +82,8 @@ def find_contact(args) -> str:
 def add_birthday(args) -> str:
     name, birthday = args
 
-    record = address_book.find(name)
-    record[0].add_birthday(birthday)
+    record = address_book.find_by_name(name)
+    record.add_birthday(birthday)
 
     return f'For {name} added birthday {birthday}'
 
@@ -73,7 +95,7 @@ def add_birthday(args) -> str:
 def show_birthday(args) -> str:
     name = args[0]
 
-    record = address_book.find(name)
+    record = address_book.find_by_name(name)
     return record.show_birthday()
 
 
@@ -86,6 +108,43 @@ def get_birthdays_per_day(args) -> str:
     else:
         days = int(args[0])
         return '\n'.join(address_book.get_birthdays_per_week(days))
+
+
+@handle_error(
+    args_error_label='You need to provide name and email',
+    key_error_label='Contact doesn\'t exists.',
+)
+def add_email(args) -> str:
+    name, email = args
+
+    record = address_book.find_by_name(name)
+    record.add_email(email)
+
+    return f'For {name} added email {email}'
+
+
+@handle_error(
+    args_error_label='You need to provide name',
+    key_error_label='Contact doesn\'t exists.',
+)
+def show_email(args) -> str:
+    name = args[0]
+
+    record = address_book.find_by_name(name)
+    return record.show_email()
+
+
+@handle_error(
+    args_error_label='You need to provide name and email',
+    key_error_label='Contact doesn\'t exists.',
+)
+def change_email(args) -> str:
+    name, email = args
+
+    record = address_book.find_by_name(name)
+    record.change_email(email)
+
+    return f'For {name} changed email {email}'
 
 
 @handle_error()
@@ -131,7 +190,8 @@ def show_notes(search: list = None) -> str:
 )
 def edit_note(title, new_title, new_desc, tags) -> str:
     new_tags = tags.split()
-    notes.edit_note(title, new_title=new_title, new_desc=new_desc, new_tags=new_tags)
+    notes.edit_note(title, new_title=new_title,
+                    new_desc=new_desc, new_tags=new_tags)
     return f'Note "{title}" has been updated.'
 
 
@@ -139,8 +199,10 @@ def edit_note(title, new_title, new_desc, tags) -> str:
     args_error_label='You need to provide title',
     key_error_label='Note doesn\'t exist.',
 )
-def remove_note(args) -> str:
-    title = args[0]
+def remove_note(title) -> str:
+    if not title:
+        raise ValueError()
+
     notes.remove_note(title)
     return f'Note "{title}" removed.'
 

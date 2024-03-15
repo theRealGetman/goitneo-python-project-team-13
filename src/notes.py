@@ -42,7 +42,8 @@ class Note:
         return ('{:20}{}\n'.format('Title:', self.title.value) +
                 '{:20}{}\n'.format('Description:', self.desc.value) +
                 '{:20}{}\n'.format('Tags:', tags_str) +
-                '{:20}{}\n'.format('Created At:', self.createdAt.value.strftime('%Y-%m-%d'))
+                '{:20}{}\n'.format(
+                    'Created At:', self.createdAt.value.strftime('%Y-%m-%d'))
                 )
 
 
@@ -95,15 +96,18 @@ def test_notes():
         print('-' * 10, title, '-' * 10)
         for title in notes.data:
             note = notes.data[title]
-            print(note.title.value, note.desc.value, [tag.value for tag in note.tags])
+            print(note.title.value, note.desc.value,
+                  [tag.value for tag in note.tags])
 
     # Додавання заміток
-    notes.add_note(Note("Shopping list", "Buy milk, bread, eggs", ["shopping", "urgent"]))
+    notes.add_note(
+        Note("Shopping list", "Buy milk, bread, eggs", ["shopping", "urgent"]))
     notes.add_note(Note("To-Do", "Call John", ["work"]))
     show('add_note')
 
     # Редагування замітки
-    notes.edit_note("Shopping list", new_desc="Buy milk, bread, eggs, and cheese")
+    notes.edit_note("Shopping list",
+                    new_desc="Buy milk, bread, eggs, and cheese")
     notes.edit_note("To-Do", new_tags=["work", "test"])
     show('edit_note')
 
@@ -113,7 +117,8 @@ def test_notes():
 
     for title in found_notes:
         note = notes[title]
-        print(note.title.value, note.desc.value, [tag.value for tag in note.tags])
+        print(note.title.value, note.desc.value,
+              [tag.value for tag in note.tags])
 
     # Видалення всіх замітки
     notes.remove_note("To-Do")

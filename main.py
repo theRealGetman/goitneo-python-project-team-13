@@ -23,9 +23,24 @@ def main():
         elif command == "hello":
             print(handlers.hello())
         elif command == "add-contact":
-            print(handlers.add_contact(args))
+            name = input("Enter name: ")
+            if handlers.is_contact_already_exist(name):
+                print(f'Contact {name} already exists')
+                continue
+            phone = input("Enter phone: ")
+            email = input("Enter email (empty to skip): ")
+            birthday = input("Enter birthday (empty to skip): ")
+            print(handlers.add_contact(name, phone, email, birthday))
         elif command == "change-contact":
-            print(handlers.change_contact(args))
+            name = input("Enter name: ")
+            if not handlers.is_contact_already_exist(name):
+                print(f'Contact {name} not exists')
+                continue
+            old_phone = input("Enter old phone: ")
+            new_phone = input("Enter new phone: ")
+            print(handlers.change_contact(name, old_phone, new_phone))
+        elif command == "remove-contact":
+            print(handlers.remove_contact(args))
         elif command == "find-contact":
             print(handlers.find_contact(args))
         elif command == "all-contacts":
@@ -36,6 +51,12 @@ def main():
             print(handlers.show_birthday(args))
         elif command == "birthdays":
             print(handlers.get_birthdays_per_day(args))
+        elif command == "add-email":
+            print(handlers.add_email(args))
+        elif command == "show-email":
+            print(handlers.show_email(args))
+        elif command == "change-email":
+            print(handlers.change_email(args))
         elif command == "add-note":
             title = input("Enter note title: ")
             if handlers.is_note_already_exist(title):
@@ -63,7 +84,11 @@ def main():
         elif command == "show-notes":
             print(handlers.show_notes(args))
         elif command == "remove-note":
-            print(handlers.remove_note(args))
+            title = input("Enter note title: ")
+            if not handlers.is_note_already_exist(title):
+                print(handlers.note_doesnt_exist(title))
+                continue
+            print(handlers.remove_note(title))
         elif command == "help":
             handlers.print_help()
         else:
