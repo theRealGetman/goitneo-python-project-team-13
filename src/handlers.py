@@ -61,7 +61,7 @@ def add_birthday(args) -> str:
     name, birthday = args
 
     record = address_book.find(name)
-    record.add_birthday(birthday)
+    record[0].add_birthday(birthday)
 
     return f'For {name} added birthday {birthday}'
 
@@ -77,9 +77,15 @@ def show_birthday(args) -> str:
     return record.show_birthday()
 
 
-@handle_error()
-def birthdays() -> str:
-    return '\n'.join(address_book.get_birthdays_per_week())
+@handle_error(
+    args_error_label='You need to specify the amount of days in numbers',
+)
+def get_birthdays_per_day(args) -> str:
+    if not args:
+        return '\n'.join(address_book.get_birthdays_per_week())
+    else:
+        days = int(args[0])
+        return '\n'.join(address_book.get_birthdays_per_week(days))
 
 
 @handle_error()

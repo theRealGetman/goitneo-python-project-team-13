@@ -35,7 +35,7 @@ def main():
         elif command == "show-birthday":
             print(handlers.show_birthday(args))
         elif command == "birthdays":
-            print(handlers.birthdays())
+            print(handlers.get_birthdays_per_day(args))
         elif command == "add-note":
             title = input("Enter note title: ")
             if handlers.is_note_already_exist(title):

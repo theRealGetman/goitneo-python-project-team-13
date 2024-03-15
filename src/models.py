@@ -152,7 +152,7 @@ class AddressBook(UserDict):
     def all_records(self):
         return self.data.values()
 
-    def get_birthdays_per_week(self) -> str:
+    def get_birthdays_per_week(self, day: int = 7) -> str:
         birthdays_by_weekday = defaultdict(list)
         today = datetime.now().date()
         for contact in self.data.values():
@@ -168,7 +168,7 @@ class AddressBook(UserDict):
                     year=today.year + 1)
 
             delta_days = (birthday_this_year - today).days
-            if delta_days < 7:
+            if delta_days < day:
                 weekday = weekdays[birthday_this_year.weekday()]
                 if weekday == 'Saturday' or weekday == 'Sunday':
                     if delta_days > 5:
@@ -181,12 +181,13 @@ class AddressBook(UserDict):
                     birthdays_by_weekday[weekday].append(
                         {'name': name, 'days_delta': delta_days})
 
-        sorted_items = {k: v for k, v in sorted(
-            birthdays_by_weekday.items(), key=lambda item: item[1][0]['days_delta'])}
-
+        sorted_items = {}
+        for k, v in sorted(birthdays_by_weekday.items(), key=lambda item: item[1][0]['days_delta']):
+            sorted_items[k] = [{'name': contact['name'], 'birthday': self.data[contact['name']].birthday.value} for contact in v]
+    
         result = []
         for weekday, contacts in sorted_items.items():
-            result.append('{}: {}'.format(weekday, ', '.join(
-                [contact['name'] for contact in contacts])))
+            names = ', '.join([contact['name'].capitalize() for contact in contacts])
+            result.append('{} {}: {}'.format(weekday, contacts[0]['birthday'].strftime('%d %b'), names))
 
         return result
