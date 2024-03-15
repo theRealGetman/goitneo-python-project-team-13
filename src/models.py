@@ -44,7 +44,7 @@ class Phone(Field):
 class Email(Field):
     def __init__(self, value):
         if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
-            raise ValueError("Invalid email address")
+            raise EmailValidationError()
         
     def __eq__(self, other):
         """Overrides the default implementation"""

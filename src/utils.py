@@ -1,5 +1,6 @@
 from prompt_toolkit.completion import NestedCompleter
 
+
 class PhoneValidationError(Exception):
     pass
 
@@ -31,8 +32,14 @@ class ContactExistsError(Exception):
 class ContactNotExistError(Exception):
     pass
 
+
+class EmailValidationError(Exception):
+    pass
+
+
 class EmailExistsError(Exception):
     pass
+
 
 class EmailNotExistError(Exception):
     pass
@@ -63,6 +70,8 @@ def handle_error(args_error_label='', key_error_label=''):
                 return 'Contact already exists'
             except ContactNotExistError:
                 return 'Contact doesn\'t exist'
+            except EmailValidationError:
+                return 'You should provide real email address'
             except EmailNotExistError:
                 return 'Email doesn\'t exist'
             except EmailExistsError:
@@ -87,12 +96,12 @@ weekdays = {
 # TODO: add notes related commands
 commands = {
     'help': "Shows all available commands",
-    'hello': "Greeting command", 
-    'add': "Adds new contact. Required arguments: name, phone (10 digits)", 
-    'change': "Changes existing contact. Required arguments: name, old phone, new phone", 
-    'phone': "Shows contact phones. Required arguments: name", 
-    'all': "Shows all contacts", 
-    'add-birthday': "Adds birthday to contact. Date format: dd-mm-yyyy", 
+    'hello': "Greeting command",
+    'add': "Adds new contact. Required arguments: name, phone (10 digits)",
+    'change': "Changes existing contact. Required arguments: name, old phone, new phone",
+    'phone': "Shows contact phones. Required arguments: name",
+    'all': "Shows all contacts",
+    'add-birthday': "Adds birthday to contact. Date format: dd-mm-yyyy",
     'show-birthday': "Shows contact birthday. Required arguments: name",
     'birthdays': "Shows upcoming birthdays",
     'exit': "Exits assistant",
@@ -100,4 +109,5 @@ commands = {
 }
 
 
-commands_completer = NestedCompleter.from_nested_dict(dict.fromkeys(commands.keys()))
+commands_completer = NestedCompleter.from_nested_dict(
+    dict.fromkeys(commands.keys()))
