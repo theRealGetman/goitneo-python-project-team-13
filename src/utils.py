@@ -45,6 +45,18 @@ class EmailNotExistError(Exception):
     pass
 
 
+class NoteExistsError(Exception):
+    pass
+
+
+class NoteNotExistError(Exception):
+    pass
+
+
+class NoteEditArgsError(Exception):
+    pass
+
+
 def handle_error(args_error_label='', key_error_label=''):
     def decorator(func):
         def inner(*args, **kwargs):
@@ -76,6 +88,12 @@ def handle_error(args_error_label='', key_error_label=''):
                 return 'Email doesn\'t exist'
             except EmailExistsError:
                 return 'Email already exist'
+            except NoteEditArgsError:
+                return 'You need to provide at least the title of the note to edit'
+            except NoteNotExistError:
+                return f"Note doesn\'t exists"
+            except NoteExistsError:
+                return f"Note already exists"
             except Exception as e:
                 return f'Exception during {func.__name__} >>> {e}'
         return inner
@@ -97,13 +115,21 @@ weekdays = {
 commands = {
     'help': "Shows all available commands",
     'hello': "Greeting command",
-    'add': "Adds new contact. Required arguments: name, phone (10 digits)",
-    'change': "Changes existing contact. Required arguments: name, old phone, new phone",
-    'phone': "Shows contact phones. Required arguments: name",
-    'all': "Shows all contacts",
-    'add-birthday': "Adds birthday to contact. Date format: dd-mm-yyyy",
+    'add-contact': "Adds new contact",
+    'change-contact': "Changes existing contact",
+    'find-contact': "Shows contact phones. Required arguments: name or phone search query",
+    'all-contacts': "Shows all contacts",
+    'remove-contact': "Removed existing contact. Required arguments: name",
+    'add-birthday': "Adds birthday to contact. Date format: dd.mm.yyyy. Required arguments: name, birthday",
     'show-birthday': "Shows contact birthday. Required arguments: name",
-    'birthdays': "Shows upcoming birthdays",
+    'birthdays': "Shows upcoming birthdays. Optional argiments: days",
+    'add-email': "Adds email to contact. Required arguments: name, email",
+    'show-email': "Shows contact email. Required arguments: name",
+    'change-email': "Changes email of contact. Required arguments: name, email",
+    'add-note': 'Adds new note',
+    'edit-note': 'Changes existing note',
+    'show-notes': 'Shows all notes. Optional add word to search',
+    'remove-note': 'Removes note',
     'exit': "Exits assistant",
     'close': "Alias for Exit command"
 }

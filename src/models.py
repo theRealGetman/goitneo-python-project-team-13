@@ -34,23 +34,26 @@ class Phone(Field):
 
         super().__init__(value)
 
-
     def __eq__(self, other):
         """Overrides the default implementation"""
         if isinstance(other, Phone):
             return self.value == other.value
         return False
-    
+
+
 class Email(Field):
     def __init__(self, value):
         if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', value):
             raise EmailValidationError()
-        
+
+        super().__init__(value)
+
     def __eq__(self, other):
         """Overrides the default implementation"""
         if isinstance(other, Email):
             return self.value == other.value
         return False
+
 
 class Record:
     def __init__(self, name):
@@ -58,12 +61,15 @@ class Record:
         self.birthday = None
         self.phones = []
         self.email = None
-        
 
     def __str__(self):
-        return f"Contact name: {self.name.value}, birthday: {self.birthday}, phones: {'; '.join(p.value for p in self.phones)}, email: {self.email}"
+        birthday = self.birthday
+        if birthday:
+            birthday = birthday.value.strftime('%d.%m.%Y')
 
-    def add_email(self, email: str):        
+        return f"Contact name: {self.name.value}, birthday: {birthday}, phones: {'; '.join(p.value for p in self.phones)}, email: {self.email}"
+
+    def add_email(self, email: str):
         if self.email:
             raise EmailExistsError()
 
@@ -74,10 +80,10 @@ class Record:
     def show_email(self) -> Email:
         if not self.email:
             raise EmailNotExistError()
-        
+
         return self.email
-    
-    def change_email(self, email: str):        
+
+    def change_email(self, email: str):
         if not self.email:
             raise EmailNotExistError()
 
@@ -85,8 +91,6 @@ class Record:
 
         self.email = email
 
-
-    
     def add_phone(self, phone: str):
         phone = Phone(phone)
 
@@ -103,7 +107,6 @@ class Record:
 
         self.phones.remove(phone)
 
-    
     def edit_phone(self, old: str, new: str):
         old = Phone(old)
         new = Phone(new)
@@ -140,6 +143,9 @@ class Record:
 
 
 class AddressBook(UserDict):
+    def is_record_already_exist(self, name):
+        return name in self.data
+
     def add_record(self, record: Record):
         name = record.name.value
 
@@ -156,15 +162,34 @@ class AddressBook(UserDict):
 
         self.data[name] = record
 
-    def find(self, name: str) -> Record:
+    def find_by_name(self, name: str) -> Record:
         try:
             return self.data[name]
         except KeyError:
             raise ContactNotExistError()
-    
-    def remove_contact(self, name: str):                  
-        del self.data[name.value] 
-       
+
+    def remove_contact(self, name: str):
+        del self.data[name]
+
+    def find(self, keyword: str) -> list[Record]:
+        try:
+            is_phone = keyword.isnumeric()
+            if is_phone:
+                records = []
+                for _, record in self.data.items():
+                    phones = [phone.value for phone in record.phones]
+                    matched_phones = list(
+                        filter(lambda phone: phone.startswith(keyword), phones))
+                    if matched_phones:
+                        records.append(record)
+                return records
+            else:
+                names = self.data.keys()
+                matched_keys = list(
+                    filter(lambda name: name.startswith(keyword), names))
+                return [self.data.get(key) for key in matched_keys]
+        except KeyError:
+            raise ContactNotExistError()
 
     def delete(self, name: str):
         try:
@@ -175,7 +200,7 @@ class AddressBook(UserDict):
     def all_records(self):
         return self.data.values()
 
-    def get_birthdays_per_week(self) -> str:
+    def get_birthdays_per_week(self, day: int = 7) -> str:
         birthdays_by_weekday = defaultdict(list)
         today = datetime.now().date()
         for contact in self.data.values():
@@ -191,7 +216,7 @@ class AddressBook(UserDict):
                     year=today.year + 1)
 
             delta_days = (birthday_this_year - today).days
-            if delta_days < 7:
+            if delta_days < day:
                 weekday = weekdays[birthday_this_year.weekday()]
                 if weekday == 'Saturday' or weekday == 'Sunday':
                     if delta_days > 5:
@@ -204,12 +229,16 @@ class AddressBook(UserDict):
                     birthdays_by_weekday[weekday].append(
                         {'name': name, 'days_delta': delta_days})
 
-        sorted_items = {k: v for k, v in sorted(
-            birthdays_by_weekday.items(), key=lambda item: item[1][0]['days_delta'])}
+        sorted_items = {}
+        for k, v in sorted(birthdays_by_weekday.items(), key=lambda item: item[1][0]['days_delta']):
+            sorted_items[k] = [
+                {'name': contact['name'], 'birthday': self.data[contact['name']].birthday.value} for contact in v]
 
         result = []
         for weekday, contacts in sorted_items.items():
-            result.append('{}: {}'.format(weekday, ', '.join(
-                [contact['name'] for contact in contacts])))
+            names = ', '.join([contact['name'].capitalize()
+                              for contact in contacts])
+            result.append('{} {}: {}'.format(
+                weekday, contacts[0]['birthday'].strftime('%d %b'), names))
 
         return result
