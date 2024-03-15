@@ -1,5 +1,7 @@
 import src.handlers as handlers
 from src.local_storage import save_book
+from src.utils import commands_completer
+from prompt_toolkit import prompt
 
 
 def parse_input(user_input):
@@ -10,8 +12,9 @@ def parse_input(user_input):
 
 def main():
     print("Welcome to the assistant bot!")
+    handlers.print_help()
     while True:
-        user_input = input("Enter a command: ")
+        user_input = prompt("Enter a command: ", completer=commands_completer)
         command, *args = parse_input(user_input)
 
         if command in ["close", "exit"]:
@@ -19,13 +22,13 @@ def main():
             break
         elif command == "hello":
             print(handlers.hello())
-        elif command == "add":
+        elif command == "add-contact":
             print(handlers.add_contact(args))
-        elif command == "change":
+        elif command == "change-contact":
             print(handlers.change_contact(args))
-        elif command == "phone":
-            print(handlers.show_phone(args))
-        elif command == "all":
+        elif command == "find-contact":
+            print(handlers.find_contact(args))
+        elif command == "all-contacts":
             print(handlers.show_all())
         elif command == "add-birthday":
             print(handlers.add_birthday(args))
@@ -33,6 +36,8 @@ def main():
             print(handlers.show_birthday(args))
         elif command == "birthdays":
             print(handlers.get_birthdays_per_day(args))
+        elif command == "help":
+            handlers.print_help()
         else:
             print(handlers.invalid_command())
         save_book()
