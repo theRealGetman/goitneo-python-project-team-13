@@ -187,7 +187,7 @@ class AddressBook(UserDict):
     
         result = []
         for weekday, contacts in sorted_items.items():
-            result.append('{}: {}'.format(weekday, ', '.join(
-                ['{} ({})'.format(contact['name'].capitalize(), contact['birthday'].strftime('%d %b %Y')) for contact in contacts])))
+            names = ', '.join([contact['name'].capitalize() for contact in contacts])
+            result.append('{} {}: {}'.format(weekday, contacts[0]['birthday'].strftime('%d %b'), names))
 
         return result

@@ -62,7 +62,7 @@ def add_birthday(args) -> str:
     name, birthday = args
 
     record = address_book.find(name)
-    record.add_birthday(birthday)
+    record[0].add_birthday(birthday)
 
     return f'For {name} added birthday {birthday}'
 
