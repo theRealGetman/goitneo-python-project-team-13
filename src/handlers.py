@@ -39,6 +39,16 @@ def change_contact(args) -> str:
 
     return f'For {name} changed phone from {old_phone} to {new_phone}'
 
+@handle_error(
+    args_error_label='You need to provide name',
+    key_error_label='Contact doesn`t exist.',
+)
+def remove_contact(args) -> str:
+    name = args
+
+    address_book.remove_contact(name)    
+    return f'Contact {name} removed'
+
 
 @handle_error(
     args_error_label='You need to provide name',
@@ -62,6 +72,7 @@ def add_birthday(args) -> str:
     return f'For {name} added birthday {birthday}'
 
 
+
 @handle_error(
     args_error_label='You need to provide name',
     key_error_label='Contact doesn\'t exists.',
@@ -76,6 +87,42 @@ def show_birthday(args) -> str:
 @handle_error()
 def birthdays() -> str:
     return '\n'.join(address_book.get_birthdays_per_week())
+
+@handle_error(
+    args_error_label='You need to provide name and email',
+    key_error_label='Contact doesn\'t exists.',
+)
+def add_email(args) -> str:
+    name, email = args
+
+    record = address_book.find(name)
+    record.add_email(email)
+
+    return f'For {name} added email {email}'
+
+@handle_error(
+    args_error_label='You need to provide name',
+    key_error_label='Contact doesn\'t exists.',
+)
+def show_email(args) -> str:
+    name = args
+
+    record = address_book.find(name)   
+    return record.show_email(name)
+
+@handle_error(
+    args_error_label='You need to provide name and email',
+    key_error_label='Contact doesn\'t exists.',
+)
+def change_email(args) -> str:
+    name, email = args
+
+    record = address_book.find(name)
+    record.change_email(email)
+
+    return f'For {name} changed email {email}'
+
+
 
 
 @handle_error()

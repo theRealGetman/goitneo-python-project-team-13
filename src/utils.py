@@ -31,6 +31,12 @@ class ContactExistsError(Exception):
 class ContactNotExistError(Exception):
     pass
 
+class EmailExistsError(Exception):
+    pass
+
+class EmailNotExistError(Exception):
+    pass
+
 
 def handle_error(args_error_label='', key_error_label=''):
     def decorator(func):
@@ -57,6 +63,10 @@ def handle_error(args_error_label='', key_error_label=''):
                 return 'Contact already exists'
             except ContactNotExistError:
                 return 'Contact doesn\'t exist'
+            except EmailNotExistError:
+                return 'Email doesn\'t exist'
+            except EmailExistsError:
+                return 'Email already exist'
             except Exception as e:
                 return f'Exception during {func.__name__} >>> {e}'
         return inner

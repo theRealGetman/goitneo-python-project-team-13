@@ -26,6 +26,8 @@ def main():
             print(handlers.add_contact(args))
         elif command == "change":
             print(handlers.change_contact(args))
+        elif command == "remove-contact":
+            print(handlers.remove_contact(args))
         elif command == "phone":
             print(handlers.show_phone(args))
         elif command == "all":
@@ -36,8 +38,14 @@ def main():
             print(handlers.show_birthday(args))
         elif command == "birthdays":
             print(handlers.birthdays())
+        elif command == "add-email":
+            print(handlers.add_email(args))
+        elif command == "show-email":
+            print(handlers.show_email(args))
+        elif command == "change-email":
+            print(handlers.change_email(args))
         elif command == "help":
-            handlers.print_help()
+            handlers.print_help()        
         else:
             print(handlers.invalid_command())
         save_book()

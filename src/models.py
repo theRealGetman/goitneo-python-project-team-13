@@ -1,6 +1,6 @@
 from collections import UserDict, defaultdict
 from datetime import datetime
-from utils import *
+from src.utils import *
 import re
 
 
@@ -57,12 +57,36 @@ class Record:
         self.name = Name(name)
         self.birthday = None
         self.phones = []
-        self.names = []
+        self.email = None
         
 
     def __str__(self):
-        return f"Contact name: {self.name.value}, birthday: {self.birthday}, phones: {'; '.join(p.value for p in self.phones)}"
+        return f"Contact name: {self.name.value}, birthday: {self.birthday}, phones: {'; '.join(p.value for p in self.phones)}, email: {self.email}"
 
+    def add_email(self, email: str):        
+        if self.email:
+            raise EmailExistsError()
+
+        email = Email(email)
+
+        self.email = email
+
+    def show_email(self) -> Email:
+        if not self.email:
+            raise EmailNotExistError()
+        
+        return self.email
+    
+    def change_email(self, email: str):        
+        if not self.email:
+            raise EmailNotExistError()
+
+        email = Email(email)
+
+        self.email = email
+
+
+    
     def add_phone(self, phone: str):
         phone = Phone(phone)
 
@@ -138,10 +162,9 @@ class AddressBook(UserDict):
         except KeyError:
             raise ContactNotExistError()
     
-    def remove_name(self, name: Name):
-        name = Name(name)
-        self.find(name)
-        self.names.remove(name)
+    def remove_contact(self, name: str):                  
+        del self.data[name.value] 
+       
 
     def delete(self, name: str):
         try:
