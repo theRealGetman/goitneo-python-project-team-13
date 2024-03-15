@@ -1,5 +1,5 @@
 import src.handlers as handlers
-from src.local_storage import save_book
+from src.local_storage import save_book, save_notes
 from src.utils import commands_completer
 from prompt_toolkit import prompt
 
@@ -36,11 +36,40 @@ def main():
             print(handlers.show_birthday(args))
         elif command == "birthdays":
             print(handlers.birthdays())
+        elif command == "add-note":
+            title = input("Enter note title: ")
+            if handlers.is_note_already_exist(title):
+                print(handlers.note_already_exist(title))
+                continue
+            desc = input("Enter note content: ")
+            tags = input("Enter note tags (leave emplty if none): ")
+
+            print(handlers.add_note([title, desc, tags]))
+        elif command == "edit-note":
+            old_title = input("Enter note title: ")
+            if not handlers.is_note_already_exist(old_title):
+                print(handlers.note_doesnt_exist(old_title))
+                continue
+
+            new_title = input("Enter note new title: ")
+            if handlers.is_note_already_exist(new_title):
+                print(handlers.note_already_exist(new_title))
+                continue
+
+            desc = input("Enter note new content: ")
+            tags = input("Enter note new tags (leave emplty if none): ")
+
+            print(handlers.edit_note(old_title, new_title, desc, tags))
+        elif command == "show-notes":
+            print(handlers.show_notes(args))
+        elif command == "remove-note":
+            print(handlers.remove_note(args))
         elif command == "help":
             handlers.print_help()
         else:
             print(handlers.invalid_command())
         save_book()
+        save_notes()
 
 
 if __name__ == "__main__":
