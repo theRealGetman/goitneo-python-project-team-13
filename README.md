@@ -60,7 +60,7 @@ Instructions on how to use them are provided below.
 
 ## Aditional features
 
-Muad'Dib can store and manage your notes by adding "tags" to your notes + searching and sorting notes by these "tags".
+Muad'Dib can store and manage your notes by adding "tags" to your notes + searching notes by these "tags".
 
 | Сommands for notes | Response |
 | ------ | ------ |
