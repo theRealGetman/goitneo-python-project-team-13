@@ -66,10 +66,10 @@ Muad'Dib can store and manage your notes by adding "tags" to your notes + search
 | ------ | ------ |
 | add-note | Adds new note. Required arguments: title, content. Optional argument: tags |
 | edit-note | Changes existing note by title. Required arguments: title, new title, new content. Optional argument: new tags |
-| show-notes | Shows all notes |
+| show-notes | Shows all notes. Optional argument: tag or title |
 | remove-note | Delete a note by title. Required arguments: title |
 
-## MMuad'Dib provides
+## Muad'Dib provides
 
 #### It can guess what the freeman wants from it based on the entered text and offer the nearest command to execute!
 
