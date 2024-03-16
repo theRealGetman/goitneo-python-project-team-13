@@ -27,7 +27,7 @@ A personal assistant with a command line interface.
 
 ## Installation
 
-Muad'Dib requires [Node.js](https://nodejs.org/) v10+ & [Python](https://www.python.org/) to run.
+Muad'Dib requires [Python](https://www.python.org/) to run.
 
 To get started with Muad'Dib:
 
@@ -64,8 +64,8 @@ Muad'Dib can store and manage your notes by adding "tags" to your notes + search
 
 | Сommands for notes | Response |
 | ------ | ------ |
-| add-note | Adds new note. Required arguments: title, content. Optional argument: tags |
-| edit-note | Changes existing note by title. Required arguments: title, new title, new content. Optional argument: new tags |
+| add-note | Adds new note. |
+| edit-note | Changes existing note by title. |
 | show-notes | Shows all notes. Optional argument: tag or title |
 | remove-note | Delete a note by title. Required arguments: title |
 
