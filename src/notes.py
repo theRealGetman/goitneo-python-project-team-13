@@ -52,13 +52,15 @@ class Notes(UserDict):
         title = note.title.value
         if title in self.data:
             raise NoteExistsError()
-        self.data[title] = note
+        self.data[title.lower()] = note
 
     def edit_note(self, title, new_title: str = '', new_desc: str = '', new_tags: list = []):
-        current_note = self.data[title]
+        current_note = self.data[title.lower()]
 
         if not current_note:
             raise NoteNotExistError()
+
+        old_title = current_note.title.value.lower()
 
         if new_title:
             current_note.title = Title(new_title)
@@ -67,17 +69,35 @@ class Notes(UserDict):
         if new_tags:
             current_note.tags = [Tag(tag) for tag in new_tags]
 
-        self.data[current_note.get('title').value] = current_note
-        return
+        if new_title and old_title != new_title.lower():
+            del self.data[old_title]
+            self.data[new_title.lower()] = current_note
+        else:
+            self.data[old_title] = current_note
 
     def find_notes(self, key_words: list) -> list:
+        notes_by_title = self.__find_notes_by_title(key_words)
+        notes_by_tags = self.__find_notes_by_tags(key_words)
+
+        return notes_by_title | notes_by_tags
+
+    def __find_notes_by_title(self, key_words: list):
         title = ' '.join(str(word) for word in key_words).lower()
-
         result = dict()
-        note_by_title = self.data[title]
 
+        note_by_title = self.data[title] if title in self.data else None
         if note_by_title:
             result[title] = note_by_title
+
+        return result
+
+    def __find_notes_by_tags(self, tags: list):
+        result = dict()
+        tags = [tag.lower() for tag in tags]
+        for note in self.data.values():
+            note_tags_lower = [tag.value.lower() for tag in note.tags]
+            if any(tag in note_tags_lower for tag in tags):
+                result[note.title.value.lower()] = note
 
         return result
 
