@@ -44,8 +44,8 @@ Instructions on how to use them are provided below.
 | ------ | ------ |
 | help | Shows all available commands |
 | hello | Greeting command |
-| add-contact | Adds new contact. Required arguments: name, phone (10 digits). Optional argument: email, birthday |
-| change-contact | Changes existing contact. Required arguments: name, old phone, new phone |
+| add-contact | Adds new contact |
+| change-contact | Changes existing contact |
 | remove-contact | Delete a contact by name. Required arguments: name |
 | find-contact | Shows contact phones. Required arguments: name or phone search query |
 | all-contacts | Shows all contacts |
