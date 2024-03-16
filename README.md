@@ -1,5 +1,5 @@
 # Muad'Dib
-## _Hello freeman, this is your personal assistant Muad'Dib_
+## _Hello fremen, this is your personal assistant Muad'Dib_
 
 ![](img/pol.jpg)
 
@@ -71,7 +71,7 @@ Muad'Dib can store and manage your notes by adding "tags" to your notes + search
 
 ## Muad'Dib provides
 
-#### It can guess what the freeman wants from it based on the entered text and offer the nearest command to execute!
+#### It can guess what the fremen wants from it based on the entered text and offer the nearest command to execute!
 
 ## License
 
