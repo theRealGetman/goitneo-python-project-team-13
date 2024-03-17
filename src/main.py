@@ -1,6 +1,7 @@
+from src.fake_utils import create_fake_contacts, create_fake_notes
 import src.handlers as handlers
 from src.local_storage import save_book, save_notes
-from src.utils import commands_completer
+from src.utils import commands_completer, welcome
 from prompt_toolkit import prompt
 
 
@@ -14,7 +15,7 @@ def parse_input(user_input: str):
 
 
 def main():
-    print("Welcome to the assistant bot!")
+    print(welcome)
     handlers.print_help()
     while True:
         user_input = prompt("Enter a command: ", completer=commands_completer)
@@ -94,6 +95,11 @@ def main():
             print(handlers.remove_note(title))
         elif command == "help":
             handlers.print_help()
+        elif command == "generate-fakes":
+            create_fake_contacts()
+            save_book()
+            create_fake_notes()
+            save_notes()
         else:
             print(handlers.invalid_command())
         save_book()

@@ -1,12 +1,14 @@
-
 from src.local_storage import address_book, notes
 from src.utils import ContactExistsError, handle_error, commands, NoteExistsError
 from src.models import Record
 from src.notes import Note
 from termcolor import colored
 
+_separator = '\n' + ('-' * 80) + '\n'
 
 # AddressBook
+
+
 @handle_error(
     args_error_label='You need to provide name and phone',
     key_error_label='Contact already exists.',
@@ -67,10 +69,9 @@ def remove_contact(args) -> str:
 )
 def find_contact(args) -> str:
     keyword = args[0]
-    separator = '\n' + ('-' * 40) + '\n'
     records = address_book.find(keyword)
     if records:
-        return '\n' + separator.join(str(record) for record in records) + '\n'
+        return '\n' + _separator.join(str(record) for record in records) + '\n'
     else:
         return f'No contacts find for search query: {keyword}'
 
@@ -149,7 +150,7 @@ def change_email(args) -> str:
 
 @handle_error()
 def show_all() -> str:
-    return '\n'.join([str(record) for record in address_book.all_records()])
+    return '\n' + _separator.join([str(record) for record in address_book.all_records()]) + '\n'
 
 
 # Notes
@@ -168,10 +169,8 @@ def add_note(args) -> str:
     key_error_label='Note doesn\'t exist.',
 )
 def show_notes(search: list = None) -> str:
-    separator = '\n' + ('-' * 40) + '\n\n'
-
     def show(notes):
-        return ''.join(separator + str(notes[note]) for note in notes) + separator
+        return ''.join(_separator + str(notes[note]) for note in notes) + _separator
 
     if not search:
         return show(notes)
@@ -209,11 +208,11 @@ def remove_note(title) -> str:
 
 # Common
 def hello() -> str:
-    return 'How can I help you?'
+    return 'Greetings, fellow traveler of the sands. May the wisdom of the desert bless your journey.'
 
 
 def close() -> str:
-    return 'Good bye!'
+    return 'May the sands of time guide your path, until we meet again beneath the stars of Arrakis. Farewell, noble traveler.'
 
 
 def note_already_exist(title: str) -> str:

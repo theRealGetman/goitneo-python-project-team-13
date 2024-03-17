@@ -82,12 +82,12 @@ class Notes(UserDict):
         return notes_by_title | notes_by_tags
 
     def __find_notes_by_title(self, key_words: list):
-        title = ' '.join(str(word) for word in key_words).lower()
+        search_title = ' '.join(str(word) for word in key_words).lower()
         result = dict()
 
-        note_by_title = self.data[title] if title in self.data else None
-        if note_by_title:
-            result[title] = note_by_title
+        for title in self.data.keys():
+            if search_title.lower() in title.lower():
+                result[title] = self.data[title]
 
         return result
 
