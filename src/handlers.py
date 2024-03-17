@@ -157,8 +157,8 @@ def show_all() -> str:
     args_error_label='You need to provide title, description, and optionally tags',
 )
 def add_note(args) -> str:
-    title, desc, *tags = args
-    note = Note(title, desc, tags)
+    title, desc, tags = args
+    note = Note(title, desc, tags.split(' '))
     notes.add_note(note)
     return f'Note "{title}" added.'
 

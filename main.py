@@ -4,7 +4,10 @@ from src.utils import commands_completer
 from prompt_toolkit import prompt
 
 
-def parse_input(user_input):
+def parse_input(user_input: str):
+    if user_input.strip() == '':
+        return '', []
+
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
     return cmd, *args
