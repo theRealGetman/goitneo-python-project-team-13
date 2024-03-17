@@ -29,11 +29,13 @@ A personal assistant with a command line interface.
 
 Muad'Dib requires [Python](https://www.python.org/) to run.
 
-To get started with Muad'Dib:
+To get started with Muad'Dib from root directory run:
 
 ```sh
-pip3 install -r requirements.txt
+pip install .
 ```
+
+And now you can use `muaddib` as a command from terminal.
 
 ## Available commands:
 

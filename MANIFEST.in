@@ -1,0 +1,3 @@
+include README.md
+include assets/address_book.bin
+include assets/notes.bin

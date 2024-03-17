@@ -186,7 +186,7 @@ class AddressBook(UserDict):
             else:
                 names = self.data.keys()
                 matched_keys = list(
-                    filter(lambda name: name.startswith(keyword), names))
+                    filter(lambda name: name.lower().startswith(keyword.lower()), names))
                 return [self.data.get(key) for key in matched_keys]
         except KeyError:
             raise ContactNotExistError()
